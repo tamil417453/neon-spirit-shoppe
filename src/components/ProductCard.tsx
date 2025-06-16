@@ -1,18 +1,8 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ShoppingCart, Star, Eye } from 'lucide-react';
-
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  rating: number;
-  category: string;
-  alcohol: string;
-  description: string;
-}
+import { ShoppingCart, Star, Eye, Clock, Percent } from 'lucide-react';
+import { Product } from '../data/products';
 
 interface ProductCardProps {
   product: Product;
@@ -21,136 +11,157 @@ interface ProductCardProps {
 }
 
 export const ProductCard = ({ product, onAddToCart, onViewProduct }: ProductCardProps) => {
-  const [isHovered, setIsHovered] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   return (
     <motion.div
-      className="group relative bg-gradient-to-br from-gray-900/80 to-black/80 backdrop-blur-sm border-2 border-cyan-500/20 rounded-2xl overflow-hidden hover:border-cyan-400/50 transition-all duration-500 shadow-lg hover:shadow-cyan-500/20"
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
-      whileHover={{ y: -12, scale: 1.02 }}
+      className="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
+      whileHover={{ y: -8, scale: 1.02 }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      {/* Neon Glow Effect */}
-      <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      
-      {/* Product Image */}
-      <div className="relative h-64 bg-gradient-to-br from-cyan-900/20 via-purple-900/20 to-pink-900/20 flex items-center justify-center overflow-hidden">
-        <div className="w-32 h-48 bg-gradient-to-b from-gray-700/80 to-gray-900/80 rounded-lg shadow-2xl transform group-hover:scale-110 transition-transform duration-500 border border-cyan-500/20">
-          {/* Enhanced Simulated bottle */}
-          <div className="w-full h-full rounded-lg bg-gradient-to-b from-amber-700/70 to-amber-900/90 border-2 border-amber-600/40 relative overflow-hidden">
-            {/* Bottle cap */}
-            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-4 h-6 bg-gradient-to-b from-yellow-400 to-yellow-600 rounded-sm shadow-lg"></div>
-            
-            {/* Label */}
-            <div className="absolute top-12 left-1/2 transform -translate-x-1/2 w-20 h-24 bg-black/90 rounded border-2 border-cyan-400/40 flex items-center justify-center shadow-lg shadow-cyan-500/20">
-              <span className="text-xs text-cyan-300 font-bold text-center leading-tight px-1">
-                {product.name.split(' ')[0]}
-              </span>
-            </div>
-            
-            {/* Liquid effect */}
-            <motion.div
-              className="absolute bottom-2 left-2 right-2 h-32 bg-gradient-to-t from-amber-600/60 to-amber-400/40 rounded-b"
-              animate={isHovered ? { 
-                background: "linear-gradient(to top, rgba(251, 191, 36, 0.7), rgba(245, 158, 11, 0.5))" 
-              } : {}}
-              transition={{ duration: 0.3 }}
-            />
-            
-            {/* Reflection */}
-            <div className="absolute top-6 left-2 w-2 h-8 bg-white/30 rounded-full blur-sm"></div>
-          </div>
+      {/* Discount Badge */}
+      {product.discount && (
+        <div className="absolute top-3 left-3 z-20 bg-gradient-to-r from-green-500 to-green-600 text-white px-2 py-1 rounded-lg text-xs font-bold flex items-center gap-1">
+          <Percent className="w-3 h-3" />
+          {product.discount}% OFF
         </div>
+      )}
 
-        {/* Enhanced Hover overlay */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isHovered ? 1 : 0 }}
-          className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-sm flex items-center justify-center"
-        >
-          {onViewProduct && (
+      {/* Availability Badge */}
+      <div className={`absolute top-3 right-3 z-20 px-2 py-1 rounded-full text-xs font-medium ${
+        product.availability 
+          ? 'bg-green-100 text-green-800 border border-green-200' 
+          : 'bg-red-100 text-red-800 border border-red-200'
+      }`}>
+        <div className={`w-2 h-2 rounded-full inline-block mr-1 ${
+          product.availability ? 'bg-green-500' : 'bg-red-500'
+        }`} />
+        {product.availability ? 'Available' : 'Out of Stock'}
+      </div>
+
+      {/* Product Image */}
+      <div className="relative h-48 bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center overflow-hidden">
+        {!imageError ? (
+          <img
+            src={product.image}
+            alt={product.name}
+            className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-110 ${
+              imageLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
+            onLoad={() => setImageLoaded(true)}
+            onError={() => setImageError(true)}
+          />
+        ) : (
+          <div className="w-32 h-40 bg-gradient-to-b from-amber-700/70 to-amber-900/90 rounded-lg border-2 border-amber-600/40 flex items-center justify-center">
+            <span className="text-white text-sm font-bold text-center px-2">
+              {product.name.split(' ')[0]}
+            </span>
+          </div>
+        )}
+
+        {/* Loading skeleton */}
+        {!imageLoaded && !imageError && (
+          <div className="absolute inset-0 bg-gray-200 animate-pulse" />
+        )}
+
+        {/* Hover overlay */}
+        {onViewProduct && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileHover={{ opacity: 1 }}
+            className="absolute inset-0 bg-black/40 flex items-center justify-center"
+          >
             <motion.button
-              whileHover={{ scale: 1.1, boxShadow: "0 0 20px rgba(6, 182, 212, 0.5)" }}
+              whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={onViewProduct}
-              className="px-6 py-3 bg-black/70 backdrop-blur-sm rounded-full text-white border-2 border-cyan-400/50 hover:bg-black/80 transition-colors flex items-center gap-2 shadow-lg shadow-cyan-500/20"
+              className="px-4 py-2 bg-white/90 backdrop-blur-sm rounded-full text-gray-900 font-medium flex items-center gap-2 shadow-lg"
             >
-              <Eye className="w-5 h-5" />
+              <Eye className="w-4 h-4" />
               View Details
             </motion.button>
-          )}
-        </motion.div>
+          </motion.div>
+        )}
 
-        {/* Enhanced Category badge */}
-        <div className="absolute top-4 left-4 px-3 py-1 bg-gradient-to-r from-cyan-600/90 to-purple-600/90 backdrop-blur-sm rounded-full text-xs font-semibold text-white border border-cyan-400/30 shadow-lg shadow-cyan-500/20">
+        {/* Category badge */}
+        <div className="absolute bottom-3 left-3 px-2 py-1 bg-black/70 backdrop-blur-sm rounded-md text-white text-xs font-medium">
           {product.category.toUpperCase()}
         </div>
       </div>
 
-      {/* Enhanced Product Info */}
-      <div className="p-6 space-y-4">
+      {/* Product Info */}
+      <div className="p-4 space-y-3">
+        {/* Brand and Rating */}
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded">
+            {product.brand}
+          </span>
+          <div className="flex items-center space-x-1">
+            <Star className="w-4 h-4 text-yellow-400 fill-current" />
+            <span className="text-sm font-medium text-gray-700">{product.rating}</span>
+          </div>
+        </div>
+
+        {/* Product Name */}
         <div>
-          <h3 className="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors duration-300">
+          <h3 className="font-bold text-gray-900 group-hover:text-cyan-600 transition-colors duration-300 line-clamp-2">
             {product.name}
           </h3>
-          <p className="text-gray-400 text-sm mt-2 line-clamp-2 leading-relaxed">
-            {product.description}
+          <p className="text-sm text-gray-600 mt-1 flex items-center gap-2">
+            <span>{product.volume}</span>
+            <span>•</span>
+            <span>{product.alcohol}</span>
           </p>
         </div>
 
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="flex items-center space-x-1">
-              <Star className="w-4 h-4 text-yellow-400 fill-current" />
-              <span className="text-sm text-gray-300 font-medium">{product.rating}</span>
-            </div>
-            <span className="text-xs text-gray-500">•</span>
-            <span className="text-xs text-cyan-400 font-medium">{product.alcohol}</span>
-          </div>
+        {/* Description */}
+        <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed">
+          {product.description}
+        </p>
+
+        {/* Delivery Info */}
+        <div className="flex items-center gap-2 text-xs text-gray-500">
+          <Clock className="w-3 h-3" />
+          <span>30 min delivery</span>
         </div>
 
-        <div className="flex items-center justify-between pt-3 border-t border-gray-700/50">
-          <div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-              ₹{product.price}
-            </span>
-            <span className="text-sm text-gray-400 ml-2">incl. taxes</span>
+        {/* Price and Add to Cart */}
+        <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+          <div className="flex flex-col">
+            <div className="flex items-center gap-2">
+              <span className="text-xl font-bold text-gray-900">
+                ₹{product.price}
+              </span>
+              {product.originalPrice && (
+                <span className="text-sm text-gray-500 line-through">
+                  ₹{product.originalPrice}
+                </span>
+              )}
+            </div>
+            <span className="text-xs text-gray-500">incl. all taxes</span>
           </div>
           
           <motion.button
-            whileHover={{ 
-              scale: 1.05, 
-              boxShadow: "0 0 20px rgba(6, 182, 212, 0.4)" 
-            }}
+            whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={onAddToCart}
-            className="px-4 py-2 bg-gradient-to-r from-cyan-600 to-purple-600 text-white rounded-lg hover:shadow-lg hover:shadow-cyan-500/25 transition-all duration-300 flex items-center space-x-2 border border-cyan-500/30"
+            disabled={!product.availability}
+            className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300 flex items-center space-x-2 ${
+              product.availability
+                ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white hover:shadow-lg hover:shadow-cyan-500/25'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
           >
             <ShoppingCart className="w-4 h-4" />
-            <span className="text-sm font-semibold">Add</span>
+            <span className="text-sm">
+              {product.availability ? 'Add' : 'Unavailable'}
+            </span>
           </motion.button>
         </div>
       </div>
-
-      {/* Enhanced Animated border */}
-      <motion.div
-        className="absolute inset-0 rounded-2xl"
-        style={{
-          background: "linear-gradient(45deg, transparent, rgba(6, 182, 212, 0.1), transparent, rgba(168, 85, 247, 0.1), transparent)",
-          backgroundSize: "400% 400%",
-        }}
-        animate={isHovered ? {
-          backgroundPosition: ["0% 0%", "100% 100%"],
-        } : {}}
-        transition={{
-          duration: 2,
-          repeat: isHovered ? Infinity : 0,
-          ease: "linear"
-        }}
-      />
     </motion.div>
   );
 };

@@ -2,193 +2,186 @@
 export interface Product {
   id: number;
   name: string;
-  brand: string;
   price: number;
   image: string;
   rating: number;
-  category: 'rum' | 'vodka' | 'beer' | 'traditional';
+  category: string;
   alcohol: string;
   description: string;
+  brand: string;
   volume: string;
-  reviews: Review[];
-}
-
-export interface Review {
-  id: number;
-  user: string;
-  rating: number;
-  comment: string;
-  date: string;
+  availability: boolean;
+  discount?: number;
+  originalPrice?: number;
 }
 
 export const products: Product[] = [
-  // Rum
+  // Rum Category
   {
     id: 1,
-    name: "Old Monk",
-    brand: "Old Monk",
-    price: 850,
-    image: "/placeholder.svg",
-    rating: 4.8,
+    name: "Old Monk Dark Rum",
+    price: 650,
+    image: "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=400&h=600&fit=crop",
+    rating: 4.5,
     category: "rum",
-    alcohol: "42.8%",
+    alcohol: "42.8% ABV",
+    description: "India's most iconic dark rum with a rich heritage and smooth taste",
+    brand: "Old Monk",
     volume: "750ml",
-    description: "India's most beloved dark rum with a smooth, rich flavor profile.",
-    reviews: [
-      { id: 1, user: "Rajesh K.", rating: 5, comment: "Classic taste, never disappoints!", date: "2024-01-15" },
-      { id: 2, user: "Priya S.", rating: 4, comment: "Great for cocktails", date: "2024-01-10" }
-    ]
+    availability: true,
+    discount: 10,
+    originalPrice: 720
   },
   {
     id: 2,
-    name: "McDowell's Celebration",
-    brand: "McDowell's",
-    price: 720,
-    image: "/placeholder.svg",
-    rating: 4.5,
+    name: "McDowell's Celebration Rum",
+    price: 580,
+    image: "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=600&fit=crop",
+    rating: 4.2,
     category: "rum",
-    alcohol: "42.8%",
+    alcohol: "42.8% ABV",
+    description: "Premium aged rum with smooth finish and rich aroma",
+    brand: "McDowell's",
     volume: "750ml",
-    description: "Premium aged rum with notes of vanilla and caramel.",
-    reviews: [
-      { id: 3, user: "Amit P.", rating: 4, comment: "Smooth finish, good value", date: "2024-01-12" }
-    ]
+    availability: true
   },
   {
     id: 3,
     name: "Contessa Rum",
-    brand: "Contessa",
-    price: 650,
-    image: "/placeholder.svg",
-    rating: 4.2,
+    price: 420,
+    image: "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=400&h=600&fit=crop",
+    rating: 4.0,
     category: "rum",
-    alcohol: "42.8%",
+    alcohol: "42.8% ABV",
+    description: "Light and smooth rum perfect for cocktails",
+    brand: "Contessa",
     volume: "750ml",
-    description: "Light and versatile rum perfect for mixing.",
-    reviews: []
+    availability: true
   },
 
-  // Vodka
+  // Vodka Category
   {
     id: 4,
-    name: "Magic Moments",
-    brand: "Magic Moments",
-    price: 650,
-    image: "/placeholder.svg",
-    rating: 4.5,
+    name: "Magic Moments Vodka",
+    price: 380,
+    image: "https://images.unsplash.com/photo-1578911373434-0cb395d2cbfb?w=400&h=600&fit=crop",
+    rating: 4.1,
     category: "vodka",
-    alcohol: "40%",
+    alcohol: "42.8% ABV",
+    description: "Premium vodka with crisp and clean taste",
+    brand: "Magic Moments",
     volume: "750ml",
-    description: "Premium triple-distilled vodka for the perfect cocktail experience.",
-    reviews: [
-      { id: 4, user: "Neha M.", rating: 5, comment: "Best vodka in this price range", date: "2024-01-08" }
-    ]
+    availability: true,
+    discount: 15,
+    originalPrice: 450
   },
   {
     id: 5,
     name: "Romanov Vodka",
-    brand: "Romanov",
-    price: 580,
-    image: "/placeholder.svg",
-    rating: 4.3,
+    price: 320,
+    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop",
+    rating: 3.9,
     category: "vodka",
-    alcohol: "40%",
+    alcohol: "42.8% ABV",
+    description: "Smooth vodka with neutral taste profile",
+    brand: "Romanov",
     volume: "750ml",
-    description: "Crystal clear vodka with a clean, crisp taste.",
-    reviews: []
+    availability: true
   },
   {
     id: 6,
-    name: "White Mischief",
-    brand: "White Mischief",
-    price: 750,
-    image: "/placeholder.svg",
-    rating: 4.4,
+    name: "White Mischief Vodka",
+    price: 290,
+    image: "https://images.unsplash.com/photo-1578911373434-0cb395d2cbfb?w=400&h=600&fit=crop",
+    rating: 3.8,
     category: "vodka",
-    alcohol: "40%",
+    alcohol: "42.8% ABV",
+    description: "Affordable vodka with clean finish",
+    brand: "White Mischief",
     volume: "750ml",
-    description: "Premium vodka with a smooth, refined character.",
-    reviews: []
+    availability: true
   },
 
-  // Beer
+  // Beer Category
   {
     id: 7,
-    name: "Kingfisher Premium",
-    brand: "Kingfisher",
-    price: 180,
-    image: "/placeholder.svg",
+    name: "Kingfisher Premium Beer",
+    price: 140,
+    image: "https://images.unsplash.com/photo-1608270586620-248524c67de9?w=400&h=600&fit=crop",
     rating: 4.3,
     category: "beer",
-    alcohol: "4.8%",
+    alcohol: "4.8% ABV",
+    description: "India's most popular premium beer with crisp taste",
+    brand: "Kingfisher",
     volume: "650ml",
-    description: "India's favorite premium lager beer with crisp, refreshing taste.",
-    reviews: [
-      { id: 5, user: "Vikram R.", rating: 4, comment: "Refreshing after a long day", date: "2024-01-14" }
-    ]
+    availability: true
   },
   {
     id: 8,
-    name: "Bira 91 White",
-    brand: "Bira 91",
-    price: 220,
-    image: "/placeholder.svg",
-    rating: 4.6,
+    name: "Bira 91 Blonde",
+    price: 160,
+    image: "https://images.unsplash.com/photo-1618885472179-5e474019f2a9?w=400&h=600&fit=crop",
+    rating: 4.4,
     category: "beer",
-    alcohol: "4.9%",
+    alcohol: "4.9% ABV",
+    description: "Craft beer with light and refreshing taste",
+    brand: "Bira 91",
     volume: "330ml",
-    description: "Craft wheat beer with a citrusy flavor and smooth finish.",
-    reviews: []
+    availability: true,
+    discount: 5,
+    originalPrice: 170
   },
   {
     id: 9,
     name: "Haywards 5000",
-    brand: "Haywards",
-    price: 200,
-    image: "/placeholder.svg",
-    rating: 4.1,
+    price: 120,
+    image: "https://images.unsplash.com/photo-1608270586620-248524c67de9?w=400&h=600&fit=crop",
+    rating: 4.0,
     category: "beer",
-    alcohol: "7%",
+    alcohol: "8% ABV",
+    description: "Strong beer with robust flavor",
+    brand: "Haywards",
     volume: "650ml",
-    description: "Strong premium beer with a bold taste.",
-    reviews: []
+    availability: true
   },
   {
     id: 10,
-    name: "Old Monk 10000 Super",
-    brand: "Old Monk",
-    price: 250,
-    image: "/placeholder.svg",
-    rating: 4.4,
+    name: "Old Monk 10000 Super Beer",
+    price: 180,
+    image: "https://images.unsplash.com/photo-1618885472179-5e474019f2a9?w=400&h=600&fit=crop",
+    rating: 4.2,
     category: "beer",
-    alcohol: "8%",
+    alcohol: "8% ABV",
+    description: "Premium strong beer from the house of Old Monk",
+    brand: "Old Monk",
     volume: "650ml",
-    description: "High-strength premium beer with rich malty flavor.",
-    reviews: []
+    availability: true
   },
 
-  // Traditional
+  // Traditional Category
   {
     id: 11,
-    name: "Cazulo Feni",
-    brand: "Cazulo",
-    price: 950,
-    image: "/placeholder.svg",
-    rating: 4.0,
+    name: "Goan Feni",
+    price: 850,
+    image: "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=400&h=600&fit=crop",
+    rating: 4.1,
     category: "traditional",
-    alcohol: "43%",
+    alcohol: "43% ABV",
+    description: "Traditional Goan spirit made from cashew or palm",
+    brand: "Goa Traditional",
     volume: "750ml",
-    description: "Authentic Goan feni made from cashew fruit.",
-    reviews: [
-      { id: 6, user: "Maria D.", rating: 4, comment: "Authentic Goan taste", date: "2024-01-05" }
-    ]
+    availability: true
   }
 ];
 
-export const getProductsByCategory = (category: string) => {
+export const getProductsByCategory = (category: string): Product[] => {
   return products.filter(product => product.category === category);
 };
 
-export const getProductById = (id: number) => {
+export const getFeaturedProducts = (): Product[] => {
+  return products.filter(product => product.discount || product.rating >= 4.2);
+};
+
+export const getProductById = (id: number): Product | undefined => {
   return products.find(product => product.id === id);
 };
