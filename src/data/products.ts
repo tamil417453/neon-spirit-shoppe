@@ -1,4 +1,12 @@
 
+export interface Review {
+  id: number;
+  user: string;
+  rating: number;
+  comment: string;
+  date: string;
+}
+
 export interface Product {
   id: number;
   name: string;
@@ -13,6 +21,7 @@ export interface Product {
   availability: boolean;
   discount?: number;
   originalPrice?: number;
+  reviews: Review[];
 }
 
 export const products: Product[] = [
@@ -30,7 +39,23 @@ export const products: Product[] = [
     volume: "750ml",
     availability: true,
     discount: 10,
-    originalPrice: 720
+    originalPrice: 720,
+    reviews: [
+      {
+        id: 1,
+        user: "Rajesh Kumar",
+        rating: 5,
+        comment: "Classic taste that never disappoints. Best rum in India!",
+        date: "2024-01-15"
+      },
+      {
+        id: 2,
+        user: "Priya Singh",
+        rating: 4,
+        comment: "Smooth and rich flavor. Great for cocktails too.",
+        date: "2024-01-10"
+      }
+    ]
   },
   {
     id: 2,
@@ -43,7 +68,16 @@ export const products: Product[] = [
     description: "Premium aged rum with smooth finish and rich aroma",
     brand: "McDowell's",
     volume: "750ml",
-    availability: true
+    availability: true,
+    reviews: [
+      {
+        id: 1,
+        user: "Amit Sharma",
+        rating: 4,
+        comment: "Good quality rum for the price. Smooth finish.",
+        date: "2024-01-12"
+      }
+    ]
   },
   {
     id: 3,
@@ -56,7 +90,8 @@ export const products: Product[] = [
     description: "Light and smooth rum perfect for cocktails",
     brand: "Contessa",
     volume: "750ml",
-    availability: true
+    availability: true,
+    reviews: []
   },
 
   // Vodka Category
@@ -73,7 +108,16 @@ export const products: Product[] = [
     volume: "750ml",
     availability: true,
     discount: 15,
-    originalPrice: 450
+    originalPrice: 450,
+    reviews: [
+      {
+        id: 1,
+        user: "Neha Gupta",
+        rating: 4,
+        comment: "Clean taste, perfect for mixing. Good value for money.",
+        date: "2024-01-08"
+      }
+    ]
   },
   {
     id: 5,
@@ -86,7 +130,8 @@ export const products: Product[] = [
     description: "Smooth vodka with neutral taste profile",
     brand: "Romanov",
     volume: "750ml",
-    availability: true
+    availability: true,
+    reviews: []
   },
   {
     id: 6,
@@ -99,7 +144,8 @@ export const products: Product[] = [
     description: "Affordable vodka with clean finish",
     brand: "White Mischief",
     volume: "750ml",
-    availability: true
+    availability: true,
+    reviews: []
   },
 
   // Beer Category
@@ -114,7 +160,23 @@ export const products: Product[] = [
     description: "India's most popular premium beer with crisp taste",
     brand: "Kingfisher",
     volume: "650ml",
-    availability: true
+    availability: true,
+    reviews: [
+      {
+        id: 1,
+        user: "Rohit Verma",
+        rating: 4,
+        comment: "Refreshing and crisp. Perfect for Indian weather.",
+        date: "2024-01-14"
+      },
+      {
+        id: 2,
+        user: "Deepak Mehta",
+        rating: 5,
+        comment: "My go-to beer. Always consistent quality.",
+        date: "2024-01-11"
+      }
+    ]
   },
   {
     id: 8,
@@ -129,7 +191,16 @@ export const products: Product[] = [
     volume: "330ml",
     availability: true,
     discount: 5,
-    originalPrice: 170
+    originalPrice: 170,
+    reviews: [
+      {
+        id: 1,
+        user: "Arjun Patel",
+        rating: 5,
+        comment: "Excellent craft beer. Light and flavorful.",
+        date: "2024-01-13"
+      }
+    ]
   },
   {
     id: 9,
@@ -142,7 +213,8 @@ export const products: Product[] = [
     description: "Strong beer with robust flavor",
     brand: "Haywards",
     volume: "650ml",
-    availability: true
+    availability: true,
+    reviews: []
   },
   {
     id: 10,
@@ -155,7 +227,8 @@ export const products: Product[] = [
     description: "Premium strong beer from the house of Old Monk",
     brand: "Old Monk",
     volume: "650ml",
-    availability: true
+    availability: true,
+    reviews: []
   },
 
   // Traditional Category
@@ -170,7 +243,16 @@ export const products: Product[] = [
     description: "Traditional Goan spirit made from cashew or palm",
     brand: "Goa Traditional",
     volume: "750ml",
-    availability: true
+    availability: true,
+    reviews: [
+      {
+        id: 1,
+        user: "Maria Fernandes",
+        rating: 4,
+        comment: "Authentic Goan taste. A unique experience.",
+        date: "2024-01-09"
+      }
+    ]
   }
 ];
 
