@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment, Float } from '@react-three/drei';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -277,22 +276,33 @@ const Index = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.4, duration: 0.8 }}
           >
-            <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
-              <ambientLight intensity={0.4} />
-              <pointLight position={[10, 10, 10]} intensity={1.5} color="#06b6d4" />
-              <pointLight position={[-10, -10, 10]} intensity={0.8} color="#a855f7" />
-              <pointLight position={[0, 10, -10]} intensity={0.6} color="#ec4899" />
-              
-              <Float speed={2} rotationIntensity={0.3} floatIntensity={0.8}>
-                <LiquorBottle 
-                  product={featuredProducts[currentBottle]}
-                  position={[0, 0, 0]}
-                />
-              </Float>
-              
-              <Environment preset="night" />
-              <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={1} />
-            </Canvas>
+            <Suspense fallback={
+              <div className="w-full h-full flex items-center justify-center">
+                <div className="text-cyan-400">Loading 3D Model...</div>
+              </div>
+            }>
+              <Canvas 
+                camera={{ position: [0, 0, 5], fov: 45 }}
+                onError={(error) => {
+                  console.error('Canvas error:', error);
+                }}
+              >
+                <ambientLight intensity={0.4} />
+                <pointLight position={[10, 10, 10]} intensity={1.5} color="#06b6d4" />
+                <pointLight position={[-10, -10, 10]} intensity={0.8} color="#a855f7" />
+                <pointLight position={[0, 10, -10]} intensity={0.6} color="#ec4899" />
+                
+                <Float speed={2} rotationIntensity={0.3} floatIntensity={0.8}>
+                  <LiquorBottle 
+                    product={featuredProducts[currentBottle]}
+                    position={[0, 0, 0]}
+                  />
+                </Float>
+                
+                <Environment preset="night" />
+                <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={1} />
+              </Canvas>
+            </Suspense>
             
             {/* Enhanced Product Info Overlay */}
             <AnimatePresence mode="wait">
