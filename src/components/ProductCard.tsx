@@ -17,9 +17,10 @@ interface Product {
 interface ProductCardProps {
   product: Product;
   onAddToCart: () => void;
+  onViewProduct?: () => void;
 }
 
-export const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
+export const ProductCard = ({ product, onAddToCart, onViewProduct }: ProductCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -49,13 +50,17 @@ export const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
           animate={{ opacity: isHovered ? 1 : 0 }}
           className="absolute inset-0 bg-purple-500/10 backdrop-blur-sm flex items-center justify-center"
         >
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white border border-white/30 hover:bg-white/30 transition-colors"
-          >
-            <Eye className="w-5 h-5" />
-          </motion.button>
+          {onViewProduct && (
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={onViewProduct}
+              className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white border border-white/30 hover:bg-white/30 transition-colors flex items-center gap-2"
+            >
+              <Eye className="w-5 h-5" />
+              View Details
+            </motion.button>
+          )}
         </motion.div>
 
         {/* Category badge */}

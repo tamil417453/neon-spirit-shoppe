@@ -1,57 +1,40 @@
-
 import { useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Environment, Float, Text3D, Center } from '@react-three/drei';
+import { OrbitControls, Environment, Float } from '@react-three/drei';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, Search, User, MapPin, Star, ChevronRight, Clock, Shield } from 'lucide-react';
 import { AgeVerificationModal } from '../components/AgeVerificationModal';
 import { LiquorBottle } from '../components/LiquorBottle';
 import { ProductCard } from '../components/ProductCard';
 import { CategorySection } from '../components/CategorySection';
+import { ShoppingCart as ShoppingCartComponent } from '../components/ShoppingCart';
+import { ProductPage } from '../components/ProductPage';
+import { DeliveryChecker } from '../components/DeliveryChecker';
+import { ProductCarousel } from '../components/ProductCarousel';
+import { products, getProductsByCategory, Product } from '../data/products';
+
+interface CartItem extends Product {
+  quantity: number;
+}
 
 const Index = () => {
   const [showAgeVerification, setShowAgeVerification] = useState(true);
   const [currentBottle, setCurrentBottle] = useState(0);
-  const [cartItems, setCartItems] = useState(0);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [showCart, setShowCart] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [currentView, setCurrentView] = useState<'home' | 'product'>('home');
 
-  const featuredProducts = [
-    { 
-      id: 1, 
-      name: "Old Monk Rum", 
-      price: 850, 
-      image: "/placeholder.svg", 
-      rating: 4.8,
-      category: "rum",
-      alcohol: "42.8%",
-      description: "India's most beloved dark rum with a smooth, rich flavor profile."
-    },
-    { 
-      id: 2, 
-      name: "Magic Moments Vodka", 
-      price: 650, 
-      image: "/placeholder.svg", 
-      rating: 4.5,
-      category: "vodka",
-      alcohol: "40%",
-      description: "Premium triple-distilled vodka for the perfect cocktail experience."
-    },
-    { 
-      id: 3, 
-      name: "Kingfisher Beer", 
-      price: 180, 
-      image: "/placeholder.svg", 
-      rating: 4.3,
-      category: "beer",
-      alcohol: "4.8%",
-      description: "India's favorite premium lager beer with crisp, refreshing taste."
-    }
-  ];
+  const featuredProducts = products.slice(0, 3);
+  const rumProducts = getProductsByCategory('rum');
+  const vodkaProducts = getProductsByCategory('vodka');
+  const beerProducts = getProductsByCategory('beer');
 
   const categories = [
-    { name: "Rum", count: 12, icon: "🥃" },
-    { name: "Vodka", count: 8, icon: "🍸" },
-    { name: "Beer", count: 15, icon: "🍺" },
-    { name: "Traditional", count: 5, icon: "🍶" }
+    { name: "Rum", count: rumProducts.length, icon: "🥃" },
+    { name: "Vodka", count: vodkaProducts.length, icon: "🍸" },
+    { name: "Beer", count: beerProducts.length, icon: "🍺" },
+    { name: "Traditional", count: getProductsByCategory('traditional').length, icon: "🍶" }
   ];
 
   useEffect(() => {
@@ -61,11 +44,67 @@ const Index = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const addToCart = (product: Product) => {
+    setCartItems(prev => {
+      const existingItem = prev.find(item => item.id === product.id);
+      if (existingItem) {
+        return prev.map(item =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      }
+      return [...prev, { ...product, quantity: 1 }];
+    });
+  };
+
+  const updateCartQuantity = (id: number, quantity: number) => {
+    setCartItems(prev =>
+      prev.map(item =>
+        item.id === id ? { ...item, quantity } : item
+      )
+    );
+  };
+
+  const removeFromCart = (id: number) => {
+    setCartItems(prev => prev.filter(item => item.id !== id));
+  };
+
+  const viewProduct = (product: Product) => {
+    setSelectedProduct(product);
+    setCurrentView('product');
+  };
+
+  const backToHome = () => {
+    setSelectedProduct(null);
+    setCurrentView('home');
+  };
+
+  const totalCartItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+  if (currentView === 'product' && selectedProduct) {
+    return (
+      <ProductPage
+        product={selectedProduct}
+        onAddToCart={addToCart}
+        onBack={backToHome}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white overflow-hidden">
       <AgeVerificationModal 
         isOpen={showAgeVerification} 
         onClose={() => setShowAgeVerification(false)} 
+      />
+      
+      <ShoppingCartComponent
+        isOpen={showCart}
+        onClose={() => setShowCart(false)}
+        items={cartItems}
+        onUpdateQuantity={updateCartQuantity}
+        onRemoveItem={removeFromCart}
       />
       
       {/* Header */}
@@ -90,10 +129,13 @@ const Index = () => {
           <Search className="w-6 h-6 cursor-pointer hover:text-purple-400 transition-colors" />
           <User className="w-6 h-6 cursor-pointer hover:text-purple-400 transition-colors" />
           <div className="relative">
-            <ShoppingCart className="w-6 h-6 cursor-pointer hover:text-purple-400 transition-colors" />
-            {cartItems > 0 && (
+            <ShoppingCart 
+              className="w-6 h-6 cursor-pointer hover:text-purple-400 transition-colors" 
+              onClick={() => setShowCart(true)}
+            />
+            {totalCartItems > 0 && (
               <span className="absolute -top-2 -right-2 bg-purple-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                {cartItems}
+                {totalCartItems}
               </span>
             )}
           </div>
@@ -218,6 +260,28 @@ const Index = () => {
       {/* Categories Section */}
       <CategorySection categories={categories} />
 
+      {/* Product Carousels */}
+      <ProductCarousel 
+        title="Premium Rum Collection"
+        products={rumProducts}
+        onAddToCart={addToCart}
+        onViewProduct={viewProduct}
+      />
+
+      <ProductCarousel 
+        title="Vodka Selection"
+        products={vodkaProducts}
+        onAddToCart={addToCart}
+        onViewProduct={viewProduct}
+      />
+
+      <ProductCarousel 
+        title="Beer Collection"
+        products={beerProducts}
+        onAddToCart={addToCart}
+        onViewProduct={viewProduct}
+      />
+
       {/* Featured Products */}
       <section className="py-20 px-6">
         <div className="container mx-auto">
@@ -246,7 +310,8 @@ const Index = () => {
               >
                 <ProductCard 
                   product={product} 
-                  onAddToCart={() => setCartItems(prev => prev + 1)}
+                  onAddToCart={() => addToCart(product)}
+                  onViewProduct={() => viewProduct(product)}
                 />
               </motion.div>
             ))}
@@ -254,30 +319,8 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Location Checker */}
-      <section className="py-20 px-6 bg-gradient-to-r from-purple-900/10 to-blue-900/10">
-        <div className="container mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="max-w-md mx-auto"
-          >
-            <MapPin className="w-12 h-12 text-purple-400 mx-auto mb-4" />
-            <h3 className="text-2xl font-bold mb-4">Check Delivery in Your Area</h3>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                placeholder="Enter your pincode"
-                className="flex-1 px-4 py-3 bg-black/50 border border-purple-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-              />
-              <button className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-300">
-                Check
-              </button>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+      {/* Delivery Checker */}
+      <DeliveryChecker />
 
       {/* Footer */}
       <footer className="py-12 px-6 border-t border-gray-800">
